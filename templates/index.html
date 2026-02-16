@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Tv Plots</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-2.25.1.min.js"></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+    <header id="appHeader">
+        <div>
+            <h1>Tv Plots</h1>
+            <p class="subtitle">Trading View data Feeding</p>
+        </div>
+        <div id="statusBar">
+            <span id="statusSymbol">—</span>
+            <span id="statusMeta">(no data)</span>
+            <span id="statusTime"></span>
+        </div>
+    </header>
+
+    <div id="settingsWrap">
+        <button id="settingsBtn" aria-haspopup="true" aria-expanded="false">⚙️</button>
+        <div id="settingsMenu" role="menu" aria-hidden="true">
+            <div class="menu-row">
+                <label for="themeSelect">Theme</label>
+                <select id="themeSelect">
+                    <option value="dark" selected>Dark (default)</option>
+                    <option value="light">Light</option>
+                </select>
+            </div>
+            <div style="border-top:1px solid var(--border); margin:8px 0; padding-top:8px;">
+                <p style="margin:0 0 8px 0; font-size:11px; color:var(--muted); text-transform:uppercase;">Analysis</p>
+                <label style="display:flex; gap:6px; margin-bottom:6px; align-items:center; font-size:13px;"><input type="checkbox" id="analyzerRSI" checked> RSI</label>
+                <label style="display:flex; gap:6px; margin-bottom:6px; align-items:center; font-size:13px;"><input type="checkbox" id="analyzerMACD" checked> MACD</label>
+                <label style="display:flex; gap:6px; margin-bottom:6px; align-items:center; font-size:13px;"><input type="checkbox" id="analyzerFib" checked> Fibonacci</label>
+                <label style="display:flex; gap:6px; align-items:center; font-size:13px;"><input type="checkbox" id="analyzerPatterns" checked> Patterns</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="mainContent">
+        <aside id="leftPanel">
+            <div class="panelCard">
+                <h3 class="panelTitle">Open Plots</h3>
+                <div id="tabs" class="tabsPanel"></div>
+            </div>
+
+            <div id="panelCard">
+                <h3 class="panelTitle">Active Indicators</h3>
+                <div id="activeIndicators"></div>
+            </div>
+        </aside>
+
+        <div id="splitter" class="splitter" title="Drag to resize panels" role="separator" aria-orientation="vertical"></div>
+
+        <section id="rightPanel">
+            <div class="viewTabs" style="display:flex; gap:8px; margin-bottom:8px; border-bottom:1px solid var(--border); padding-bottom:8px;">
+                <button id="viewChartBtn" class="viewTab active" data-view="chart">Plot</button>
+            </div>
+
+            <div id="chartView" class="viewContent">
+                <div id="chartContainer">
+                    <div class="chartToolbar">
+                        <div class="toolbar-left">
+                            <label>Symbol</label>
+                            <select id="symbolSelect">
+                                <option value="MUT">MUT</option>
+                                <option value="AKT">AKT</option>
+                                <option value="HPS">HPS</option>
+                                <option value="CDM">CDM</option>
+                                <option value="ARD">ARD</option>
+                                <option value="CIH">CIH</option>
+                                <option value="ATW">ATW</option>
+                                <option value="CMG">CMG</option>
+                                <option value="BCP">BCP</option>
+                                <option value="GTM">GTM</option>
+                                <option value="TGC">TGC</option>
+                            </select>
+                            <label>Exchange</label>
+                            <select id="exchangeSelect">
+                                <option value="CSEMA">CSEMA</option>
+                            </select>
+                            <label>Range</label>
+                            <select id="rangeSelect">
+                                <option value="1d">1D</option>
+                                <option value="1w">1W</option>
+                                <option value="1m">1M</option>
+                                <option value="6m">6M</option>
+                                <option value="1y">1Y</option>
+                                <option value="2y">2Y</option>
+                            </select>
+                            <div id="loadingIndicator" style="display:none; font-size:12px; color:var(--muted); margin-left:8px; display:inline-flex; align-items:center; gap:8px;">
+                                <div class="spinner" aria-hidden="true"></div>
+                                <span class="loaderText">Loading…</span>
+                            </div>
+                        </div>
+                        <div class="toolbar-center">
+                            <div class="toolbar-section">
+                                <label style="font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:var(--muted); margin-right:6px;">Indicators</label>
+                                <div class="indicatorButtons">
+                                    <button id="addSMA">SMA</button>
+                                    <button id="addEMA">EMA</button>
+                                    <button id="addBB">BB</button>
+                                    <button id="addRSI">RSI</button>
+                                    <button id="addMACD">MACD</button>
+                                </div>
+                            </div>
+                            <div class="toolbar-section">
+                                <label style="font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:var(--muted); margin-right:6px;">Presets</label>
+                                <div style="display:flex; gap:6px;">
+                                    <button id="presetDefault">Default</button>
+                                    <button id="presetMA">MA+RSI</button>
+                                    <button id="presetFull">All</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="toolbar-right">
+                            <button id="downloadJSON">Export</button>
+                        </div>
+                    </div>
+
+                    <div id="fetchProgress" style="display:none; height:4px; width:100%; margin-bottom:8px; border-radius:4px; overflow:hidden;"></div>
+                    <div id="chart" class="resizable-panel"></div>
+                </div>
+            </div>
+
+        </section>
+
+    <script type="module" src="/static/js/chart.js"></script>
+
+    <footer id="appFooter">
+        <div class="footerContent">
+            <span>© 2026 Yassine Ouhadi — <a href="https://github.com/YassineOuhadi" target="_blank" rel="noopener">GitHub</a></span>
+            <span class="powered">Powered by <a href="https://www.tradingview.com" target="_blank" rel="noopener">TradingView</a></span>
+        </div>
+    </footer>
+
+</body>
+</html>

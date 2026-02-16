@@ -1,0 +1,53 @@
+name: tv-data-feed
+version: '1.0'
+summary: TV Data Feeding
+
+base: core22
+grade: stable
+confinement: strict
+
+apps:
+  tv-data-feed:
+    command: bin/wave
+    extensions: [gnome]
+    plugs:
+      - desktop
+      - desktop-legacy
+      - x11
+      - network
+      - network-bind
+      - home
+
+parts:
+  tv-data-feed:
+    plugin: python
+    source: .
+
+    python-packages:
+      - fastapi
+      - uvicorn
+      - pandas
+      - numpy
+      - matplotlib
+      - scikit-learn
+      - plotly
+      - python-dotenv
+      - jinja2
+      - pywebview
+      - git+https://github.com/rongardF/tvdatafeed.git
+
+    stage-packages:
+      - libgtk-3-0
+      - libnss3
+      - libxkbcommon0
+      - libwebkit2gtk-4.0-37
+      - gir1.2-webkit2-4.0
+
+    override-build: |
+      craftctl default
+      cp -r app.py server templates static gui $CRAFT_PART_INSTALL/
+      install -Dm755 bin/wave $CRAFT_PART_INSTALL/bin/wave
+      install -Dm644 gui/icons/tv-data-feed.png \
+        $CRAFT_PART_INSTALL/usr/share/icons/hicolor/256x256/apps/tv-data-feed.png
+      install -Dm644 snap/gui/tv-data-feed.desktop \
+        $CRAFT_PART_INSTALL/usr/share/applications/tv-data-feed.desktop

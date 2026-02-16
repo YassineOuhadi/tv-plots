@@ -1,0 +1,35 @@
+#!/usr/bin/env python3
+import os
+import sys
+import threading
+import webview
+import uvicorn
+
+os.environ["PYWEBVIEW_GUI"] = "gtk"
+os.environ["WEBKIT_DISABLE_COMPOSITING_MODE"] = "1"
+os.environ["WEBKIT_DISABLE_SANDBOX"] = "1"
+os.environ["LIBGL_ALWAYS_SOFTWARE"] = "1"
+
+SNAP_ROOT = os.environ.get("SNAP", os.getcwd())
+sys.path.insert(0, SNAP_ROOT)
+
+from app import app
+
+def start_server():
+    uvicorn.run(
+        app,
+        host="127.0.0.1",
+        port=8000,
+        log_level="info"
+    )
+
+threading.Thread(target=start_server, daemon=True).start()
+
+webview.create_window(
+    title="TV Data Feeding",
+    url="http://127.0.0.1:8000",
+    width=1200,
+    height=800
+)
+
+webview.start(gui="gtk")

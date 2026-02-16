@@ -1,0 +1,11 @@
+python-dotenv
+pandas
+matplotlib
+scikit-learn
+plotly
+fastapi
+uvicorn
+numpy
+jinja2
+pywebview
+git+https://github.com/rongardF/tvdatafeed.git
